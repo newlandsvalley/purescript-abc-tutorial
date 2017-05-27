@@ -1,0 +1,8 @@
+/bower_components/
+/node_modules/
+/.pulp-cache/
+/deprecated/
+/output/
+/dist/abc-editor.js
+/.psc*
+/.psa*
