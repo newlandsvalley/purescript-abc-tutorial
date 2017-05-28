@@ -7,7 +7,7 @@ import Audio.SoundFont (AUDIO)
 import Data.Abc (AbcTune)
 import Data.Abc.Parser (PositionedParseError(..), parse)
 import Data.Array (length, slice)
-import Data.Either (Either(..), isRight)
+import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
 import Data.Monoid (mempty)
 import Data.String (fromCharArray, toCharArray)
@@ -51,7 +51,6 @@ initialState = {
   , playerState : Nothing
   }
 
-
 foldp :: Event -> State -> EffModel State Event (au :: AUDIO)
 foldp NoOp state = noEffects $ state
 foldp Init state =
@@ -83,8 +82,6 @@ foldp (PlayerEvent e) state =
         # mapState \pst -> state { playerState = Just pst }
     _ ->
       noEffects state
-
-
 
 -- | make sure everything is notified if the ABC changes for any reason
 -- | we'll eventually have to add effects
@@ -162,29 +159,22 @@ viewPlayer state =
     _ ->
       mempty
 
--- | is the player playing ?
-isPlaying :: State -> Boolean
-isPlaying state =
-  case state.playerState of
-    Just ps -> ps.playing
-    _ -> false
-
 view :: State -> HTML Event
 view state =
-  let
-    isEnabled = isRight state.tuneResult
-  in
-    div do
+   div do
+      -- title and instructions at the top
       h1 ! centreStyle $ text ("ABC Tutorial: Lesson " <> (show $ state.lessonIndex + 1) <> " - " <> Lessons.title state.lessonIndex)
+      div ! instructionStyle $ do
+        p $ text (Lessons.instruction state.lessonIndex)
       -- the ABC text on the left
       div ! leftPaneStyle $ do
-        div ! leftPanelComponentStyle $ do
+        div ! leftMarginStyle $ do
           textarea ! taStyle ! At.cols "50" ! At.rows "15" ! At.value state.abc
               ! At.spellcheck "false" ! At.autocomplete "false" ! At.autofocus "true"
-                #! onInput (\e -> Abc (targetValue e) ) $ mempty
+               #! onInput (\e -> Abc (targetValue e) ) $ mempty
           viewParseError state
 
-          div ! rightPaneStyle $ do
+          div ! leftComponentStyle $ do
             (button !? (state.lessonIndex <= 0)) (At.disabled "disabled") ! (buttonStyle (state.lessonIndex > 0)) ! At.className "hoverable"
                 #! onClick (const $ MoveToEnd false) $ text "first"
             (button !? (state.lessonIndex <= 0)) (At.disabled "disabled") ! (buttonStyle (state.lessonIndex > 0)) ! At.className "hoverable"
@@ -193,9 +183,11 @@ view state =
                 #! onClick (const $ Move true) $ text "next"
             (button !? (state.lessonIndex >= Lessons.last)) (At.disabled "disabled") ! (buttonStyle (state.lessonIndex < Lessons.last)) ! At.className "hoverable"
                 #! onClick (const $ MoveToEnd true) $ text "last"
+            viewPlayer state
 
       -- the score and player on the right
-      div ! rightPaneStyle $ do
+      div ! floatLeftStyle $ do
         div do
           img ! At.src (Lessons.scoreUrl state.lessonIndex)
-        viewPlayer state
+        div ! hintStyle $ do
+            p $ text (Lessons.hint state.lessonIndex)

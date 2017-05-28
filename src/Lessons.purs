@@ -5,6 +5,7 @@ module Lessons
   , title
   , example
   , hint
+  , instruction
   , scoreUrl
   ) where
 
