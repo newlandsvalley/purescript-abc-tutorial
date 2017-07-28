@@ -1,7 +1,7 @@
 module App where
 
 -- import CSS.Geometry (paddingTop, paddingBottom, marginLeft, marginRight, marginTop, width)
-import Data.Midi.Player as MidiPlayer
+import Audio.Midi.Player as MidiPlayer
 import Lessons as Lessons
 import Audio.SoundFont (AUDIO)
 import Data.Abc (AbcTune)
@@ -115,7 +115,7 @@ debugPlayer state =
         text ("no player state")
     Just pstate ->
       do
-       text ("player melody size: " <> (show $ length pstate.melody))
+       text ("player melody size: " <> (show $ length pstate.basePlayer.melody))
 
 -- | display a snippet of text with the error highlighted
 viewParseError :: State -> HTML Event
