@@ -1,18 +1,19 @@
 module App where
 
 -- import CSS.Geometry (paddingTop, paddingBottom, marginLeft, marginRight, marginTop, width)
+
+import Network.HTTP.Affjax (AJAX)
 import Audio.Midi.Player as MidiPlayer
 import Lessons as Lessons
-import Audio.SoundFont (AUDIO)
+import Audio.SoundFont (AUDIO, Instrument, loadPianoSoundFont)
 import Data.Abc (AbcTune)
 import Data.Abc.Parser (PositionedParseError(..), parse)
-import Data.Array (length, slice)
+import Data.Array (length, singleton, slice)
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
-import Data.Monoid (mempty)
 import Data.String (fromCharArray, toCharArray)
 import View.CSS
-import Prelude (const, discard, max, min, pure, show, ($), (#), (<>), (+), (-), (<=), (>=), (>), (<))
+import Prelude (const, bind, discard, max, min, pure, show, ($), (#), (<>), (+), (-), (<=), (>=), (>), (<))
 import Pux (EffModel, noEffects, mapEffects, mapState)
 import Pux.DOM.Events (onInput, onClick, targetValue)
 import Pux.DOM.HTML (HTML, child)
@@ -20,12 +21,12 @@ import Text.Smolder.HTML (button, div, h1, img, p, span, textarea)
 import Text.Smolder.HTML.Attributes as At
 import Text.Smolder.Markup (text, (#!), (!), (!?))
 
-
 -- import Debug.Trace (trace, traceShow, traceShowM)
 
 data Event
     = NoOp
-    | Init
+    | RequestLoadPianoFont String
+    | FontLoaded Instrument
     | Abc String
     | Move Boolean           -- Move lesson up/down
     | MoveToEnd Boolean      -- Move lesson to start/finish
@@ -35,7 +36,7 @@ type State = {
     abc :: String
   , tuneResult :: Either PositionedParseError AbcTune
   , lessonIndex :: Int
-  , playerState :: Maybe MidiPlayer.State
+  , playerState :: MidiPlayer.State
 }
 
 -- | there is no tune yet
@@ -44,17 +45,32 @@ nullTune =
   Left (PositionedParseError { pos : 0, error : "" })
 
 initialState :: State
-initialState = {
-    abc : (Lessons.example 0) <> " |\r\n"
+initialState =
+  { abc : (Lessons.example 0) <> " |\r\n"
   , tuneResult : nullTune
   , lessonIndex : 0
-  , playerState : Nothing
+  , playerState : MidiPlayer.initialState []
   }
 
-foldp :: Event -> State -> EffModel State Event (au :: AUDIO)
+foldp :: Event -> State -> EffModel State Event (ajax :: AJAX, au :: AUDIO)
 foldp NoOp state = noEffects $ state
-foldp Init state =
-  onChangedAbc state.abc state
+foldp (RequestLoadPianoFont fontDir) state =
+  let
+    effects =
+      [
+        do  -- request the fonts are loaded
+          instrument <- loadPianoSoundFont fontDir
+          pure $ Just (FontLoaded instrument)
+      ]
+  in
+    {state: state, effects: effects}
+foldp (FontLoaded instrument) state =
+  let
+    playerState = MidiPlayer.initialState (singleton instrument)
+  in
+    -- we need to react to a changed Euterpea after each instrument font loads.  This is because the user may edit
+    -- the tne text to incorporate the new instrument names before loading their soundfonts
+    onChangedAbc state.abc $ state { playerState = playerState }
 foldp (Abc s) state = onChangedAbc s state
 foldp (Move isUp) state =
   let
@@ -75,13 +91,10 @@ foldp (MoveToEnd isUp) state =
   in
     onChangedAbc (Lessons.example next) (state { lessonIndex = next })
 foldp (PlayerEvent e) state =
-  case state.playerState of
-    Just pstate ->
-      MidiPlayer.foldp e pstate
-        # mapEffects PlayerEvent
-        # mapState \pst -> state { playerState = Just pst }
-    _ ->
-      noEffects state
+  MidiPlayer.foldp e state.playerState
+    # mapEffects PlayerEvent
+    # mapState \pst -> state { playerState = pst }
+
 
 -- | make sure everything is notified if the ABC changes for any reason
 -- | we'll eventually have to add effects
@@ -95,7 +108,7 @@ onChangedAbc abc state =
   in
     case tuneResult of
       Right tune ->
-        {state: newState { playerState = Just MidiPlayer.initialState}
+        {state: newState
           , effects:
             [
               do
@@ -104,18 +117,13 @@ onChangedAbc abc state =
 
         }
       Left err ->
-        noEffects newState { playerState = Nothing }
+        noEffects newState
 
 
 debugPlayer :: State -> HTML Event
 debugPlayer state =
-  case state.playerState of
-    Nothing ->
-      do
-        text ("no player state")
-    Just pstate ->
-      do
-       text ("player melody size: " <> (show $ length pstate.basePlayer.melody))
+  do
+    text ("player melody size: " <> (show $ length state.playerState.basePlayer.melody))
 
 -- | display a snippet of text with the error highlighted
 viewParseError :: State -> HTML Event
@@ -148,16 +156,16 @@ viewParseError state =
               span ! errorHighlightStyle $ text (fromCharArray errorChar)
               text $ fromCharArray errorSuffix
       _ ->
-        mempty
+        text ""
 
--- | only display the player if we have a MIDI recording
+-- | only display the player if we have a Melody
 viewPlayer :: State -> HTML Event
 viewPlayer state =
-  case state.playerState of
-    Just pstate ->
-      child PlayerEvent MidiPlayer.view $ pstate
+  case state.tuneResult of
+    Right _ ->
+      child PlayerEvent MidiPlayer.view $ state.playerState
     _ ->
-      mempty
+      text ""
 
 view :: State -> HTML Event
 view state =
@@ -171,7 +179,7 @@ view state =
         div ! leftMarginStyle $ do
           textarea ! taStyle ! At.cols "50" ! At.rows "15" ! At.value state.abc
               ! At.spellcheck "false" ! At.autocomplete "false" ! At.autofocus "true"
-               #! onInput (\e -> Abc (targetValue e) ) $ mempty
+               #! onInput (\e -> Abc (targetValue e) ) $ text ""
           viewParseError state
 
           div ! leftComponentStyle $ do
