@@ -1,26 +1,13 @@
 module Main where
 
-import App (Event(RequestLoadPianoFont), foldp, initialState, view)
-import Network.HTTP.Affjax (AJAX)
-import Audio.SoundFont (AUDIO)
-import Control.Monad.Eff (Eff)
-import Prelude (Unit, bind, ($))
-import Pux (CoreEffects, start)
-import Pux.Renderer.React (renderToDOM)
-import Signal (Signal, constant)
+import Prelude
+import Effect (Effect)
+import Halogen.Aff as HA
+import Halogen.VDom.Driver (runUI)
 
-initFont :: Signal Event
-initFont = constant $ RequestLoadPianoFont "assets/soundfonts"
+import Container as Container
 
--- | Start and render the app
-main :: Eff (CoreEffects (ajax :: AJAX, au:: AUDIO)) Unit
-main = do
-
-  app <- start
-    { initialState: initialState
-    , view
-    , foldp
-    , inputs: [ initFont ]
-    }
-
-  renderToDOM "#app" app.markup app.input
+main :: Effect Unit
+main = HA.runHalogenAff do
+  body <- HA.awaitBody
+  runUI Container.component unit body
