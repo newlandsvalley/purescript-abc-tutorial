@@ -442,4 +442,4 @@ scoreUrl i =
   let
     score = fetch i _.id
   in
-    "assets/images/scores/" <> score <>  ".png"
+    "assets/images/tutorial/" <> score <>  ".png"

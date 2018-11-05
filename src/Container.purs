@@ -86,11 +86,14 @@ component =
   render :: State -> H.ParentHTML Query ChildQuery ChildSlot Aff
   render state = HH.div_
     [ HH.h1
-       [HP.class_ (H.ClassName "center") ]
-       [HH.text "ABC Tutorial"]
+         [HP.class_ (H.ClassName "center") ]
+         [HH.text ("ABC Tutorial: Lesson "
+             <> show (state.lessonIndex + 1)
+             <> " - "
+             <> Lessons.title state.lessonIndex)]
       , HH.div
-          [ HP.id_ "instruction" ]
-          [ HH.text $ Lessons.instruction state.lessonIndex ]
+        [ HP.id_ "instruction" ]
+        [ HH.text $ Lessons.instruction state.lessonIndex ]
 
       -- left pane - editor and controls
       , HH.div
@@ -117,13 +120,16 @@ component =
         -- right pane - score and hint
         , HH.div
           [ HP.class_ (H.ClassName "rightPane") ]
-            [ HH.div_
-              [HH.img
-                [ HP.src (Lessons.scoreUrl state.lessonIndex) ]
-              ]
+            [ HH.div
+               [ HP.class_ (H.ClassName "rightPanelComponent") ]
+                 [HH.img
+                   [ HP.src (Lessons.scoreUrl state.lessonIndex) ]
+                 ]
               , HH.div
-                 [ HP.id_ "hint" ]
-                 [ HH.text $ Lessons.hint state.lessonIndex ]
+                 [ HP.id_ "hint"
+                 , HP.class_ (H.ClassName "rightPanelComponent")
+                 ]
+                   [ HH.text $ Lessons.hint state.lessonIndex ]
             ]
       ]
 
