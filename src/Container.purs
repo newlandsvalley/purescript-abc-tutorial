@@ -12,7 +12,7 @@ import Data.Either (Either(..), either)
 import Data.List (List(..))
 import Data.Maybe (Maybe(..))
 import Data.Symbol (SProxy(..))
-import Effect.Aff (Aff)
+import Effect.Aff.Class (class MonadAff)
 import Halogen as H
 import Halogen.EditorComponent as ED
 import Halogen.HTML as HH
@@ -56,7 +56,8 @@ type ChildSlots =
 _editor = SProxy :: SProxy "editor"
 _player = SProxy :: SProxy "player"
 
-component ::  forall q i o. H.Component HH.HTML q i o Aff
+component :: ∀ q i o m. MonadAff m => H.Component HH.HTML q i o m
+-- component ::  forall q i o. H.Component HH.HTML q i o Aff
 component =
   H.mkComponent
     { initialState
@@ -76,7 +77,7 @@ component =
     , lessonIndex : 0
     }
 
-  render :: State -> H.ComponentHTML Action ChildSlots Aff
+  render :: State -> H.ComponentHTML Action ChildSlots m
   render state = HH.div_
     [ HH.h1
          [HP.class_ (H.ClassName "center") ]
@@ -126,7 +127,8 @@ component =
             ]
       ]
 
-  handleAction ∷ Action → H.HalogenM State Action ChildSlots o Aff Unit
+  handleAction ∷ Action → H.HalogenM State Action ChildSlots o m Unit
+
   handleAction = case _ of
     Init -> do
       instrument <- H.liftAff $ loadPianoSoundFont "assets/soundfonts"
@@ -152,9 +154,9 @@ component =
 
 -- refresh the state of the player by passing it the tune result
 -- (if it had parsed OK)
-refreshPlayerState :: ∀ o.
+refreshPlayerState :: ∀ o m.
        Either PositionedParseError AbcTune
-    -> H.HalogenM State Action ChildSlots o Aff Unit
+    -> H.HalogenM State Action ChildSlots o m Unit
 refreshPlayerState tuneResult = do
   _ <- either
      (\_ -> H.query _player unit $ H.tell PC.StopMelody)
@@ -170,7 +172,7 @@ toPlayable abcTune =
    MidiRecording $ toMidi abcTune
 
 -- rendering functions
-renderPlayer :: State -> H.ComponentHTML Action ChildSlots Aff
+renderPlayer :: ∀ m. MonadAff m => State -> H.ComponentHTML Action ChildSlots m
 renderPlayer state =
   case state.tuneResult of
     Right abcTune ->
@@ -184,7 +186,7 @@ renderPlayer state =
         [  ]
 
 -- | render any of the four buttons that move the lesson index
-renderMoveIndexButton :: MoveButtonType -> State -> H.ComponentHTML Action ChildSlots Aff
+renderMoveIndexButton :: ∀ m. MoveButtonType -> State -> H.ComponentHTML Action ChildSlots m
 renderMoveIndexButton buttonType state =
   let
     enabled =
