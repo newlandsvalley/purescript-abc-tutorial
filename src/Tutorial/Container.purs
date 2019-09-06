@@ -1,4 +1,4 @@
-module Container where
+module Tutorial.Container where
 
 import Prelude
 
@@ -14,13 +14,13 @@ import Data.Maybe (Maybe(..))
 import Data.Symbol (SProxy(..))
 import Effect.Aff.Class (class MonadAff)
 import Halogen as H
-import Halogen.EditorComponent as ED
+import Tutorial.EditorComponent as ED
 import Halogen.HTML as HH
 import Halogen.HTML.Core (ClassName(..))
 import Halogen.HTML.Events as HE
 import Halogen.HTML.Properties as HP
 import Halogen.PlayerComponent as PC
-import Lessons as Lessons
+import Tutorial.Lessons as Lessons
 
 type State =
   { instruments :: Array Instrument
@@ -57,7 +57,6 @@ _editor = SProxy :: SProxy "editor"
 _player = SProxy :: SProxy "player"
 
 component :: ∀ q i o m. MonadAff m => H.Component HH.HTML q i o m
--- component ::  forall q i o. H.Component HH.HTML q i o Aff
 component =
   H.mkComponent
     { initialState

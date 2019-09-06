@@ -1,4 +1,4 @@
-module Lessons
+module Tutorial.Lessons
   ( Lesson
   , lessons
   , last

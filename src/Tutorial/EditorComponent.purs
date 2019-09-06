@@ -1,4 +1,4 @@
-module Halogen.EditorComponent where
+module Tutorial.EditorComponent where
 
 import Prelude
 
