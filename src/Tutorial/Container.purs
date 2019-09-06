@@ -2,17 +2,17 @@ module Tutorial.Container where
 
 import Prelude
 
-import Audio.SoundFont (Instrument, loadPianoSoundFont)
+import Audio.SoundFont (Instrument)
 import Audio.SoundFont.Melody.Class (MidiRecording(..))
 import Data.Abc (AbcTune)
 import Data.Abc.Midi (toMidi)
 import Data.Abc.Parser (PositionedParseError)
-import Data.Array (singleton) as A
 import Data.Either (Either(..), either)
 import Data.List (List(..))
 import Data.Maybe (Maybe(..))
 import Data.Symbol (SProxy(..))
 import Effect.Aff.Class (class MonadAff)
+import Data.Const (Const)
 import Halogen as H
 import Tutorial.EditorComponent as ED
 import Halogen.HTML as HH
@@ -21,6 +21,8 @@ import Halogen.HTML.Events as HE
 import Halogen.HTML.Properties as HP
 import Halogen.PlayerComponent as PC
 import Tutorial.Lessons as Lessons
+
+type Slot = H.Slot (Const Void) Void
 
 type State =
   { instruments :: Array Instrument
@@ -33,12 +35,16 @@ data Action =
   | Init
   | HandleNewTuneText ED.Message
   | HandleTuneIsPlaying PC.Message
+  | Finalize
 
 data MoveButtonType =
     Start
   | Forward
   | Back
   | Finish
+
+type Input =
+  { instruments :: Array Instrument }
 
 emptyTune :: AbcTune
 emptyTune =
@@ -56,7 +62,7 @@ type ChildSlots =
 _editor = SProxy :: SProxy "editor"
 _player = SProxy :: SProxy "player"
 
-component :: ∀ q i o m. MonadAff m => H.Component HH.HTML q i o m
+component :: ∀ q o m. MonadAff m => H.Component HH.HTML q Input o m
 component =
   H.mkComponent
     { initialState
@@ -64,14 +70,14 @@ component =
     , eval: H.mkEval $ H.defaultEval
         { handleAction = handleAction
         , initialize = Just Init
-        , finalize = Nothing
+        , finalize = Just Finalize
         }
     }
   where
 
-  initialState :: i -> State
-  initialState _ =
-    { instruments: []
+  initialState :: Input -> State
+  initialState input =
+    { instruments: input.instruments
     , tuneResult: ED.nullTune
     , lessonIndex : 0
     }
@@ -130,9 +136,7 @@ component =
 
   handleAction = case _ of
     Init -> do
-      instrument <- H.liftAff $ loadPianoSoundFont "assets/soundfonts"
       _ <- H.query _editor unit $ H.tell (ED.UpdateContent (Lessons.example 0))
-      _ <- H.modify (\st -> st { instruments = A.singleton instrument } )
       pure unit
     Move lessonIndex -> do
       _ <- H.modify (\st -> st { lessonIndex = lessonIndex } )
@@ -149,6 +153,9 @@ component =
       -- we ignore this message, but if we wanted to we could
       -- disable any button that can alter the editor contents whilst the player
       -- is playing and re-enable when it stops playing
+      pure unit
+    Finalize -> do
+      _ <- H.query _player unit $ H.tell PC.StopMelody
       pure unit
 
 -- refresh the state of the player by passing it the tune result
