@@ -5,7 +5,7 @@ This is a tutorial for the ABC notation. It provides a set of ABC samples which 
 
 Try it [here](http://www.tradtunedb.org.uk/abctutorial).
 
-Built with Purescript 0.12 and Halogen 5.0.0 (release candidate 4).
+Built with Purescript 0.13.3 and Halogen 5.0.0 (release candidate 4).
 
 Building
 --------
@@ -15,4 +15,12 @@ from the current directory:
     $ bower install
     $ npm run build
 
-Then navigate to dist/index.html.
+Building the example
+--------------------
+
+from the current directory:
+
+    $ bower install
+    $ npm run example   
+
+Then navigate to example/dist/index.html.
