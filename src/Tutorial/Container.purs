@@ -83,7 +83,8 @@ component =
     }
 
   render :: State -> H.ComponentHTML Action ChildSlots m
-  render state = HH.div_
+  render state = HH.div
+    [ HP.id_ "abcTutorial" ]
     [ HH.h1
          [HP.class_ (H.ClassName "center") ]
          [HH.text ("ABC Tutorial: Lesson "
