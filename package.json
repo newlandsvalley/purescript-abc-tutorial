@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "build": "pulp build",
-    "example": "pulp build --main Example.Main --include example/src --to example/dist/abc-tutorial.js",
+    "example": "pulp build --no-check-main --main Example.Main --include example/src --to example/dist/abc-tutorial.js",
     "minimize": "uglifyjs example/dist/abc-tutorial.js --output example/dist/min.js --compress"
   },
   "devDependencies": {
