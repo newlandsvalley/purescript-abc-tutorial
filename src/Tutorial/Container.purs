@@ -3,10 +3,9 @@ module Tutorial.Container where
 import Prelude
 
 import Audio.SoundFont (Instrument)
-import Audio.SoundFont.Melody.Class (MidiRecording(..))
 import Data.Abc (AbcTune)
-import Data.Abc.Midi (toMidi)
 import Data.Abc.Parser (PositionedParseError)
+import Data.Abc.PlayableAbc (PlayableAbc(..))
 import Data.Either (Either(..), either)
 import Data.List (List(..))
 import Data.Maybe (Maybe(..))
@@ -52,11 +51,11 @@ emptyTune =
 
 -- the player is generic over a variety of playable sources of music
 -- so we must specialize to MidiRecording
-type PlayerQuery = PC.Query MidiRecording
+type PlayerQuery = PC.Query PlayableAbc
 
 type ChildSlots =
   ( editor :: ED.Slot Unit
-  , player :: (PC.Slot MidiRecording) Unit
+  , player :: (PC.Slot PlayableAbc) Unit
   )
 
 _editor = SProxy :: SProxy "editor"
@@ -174,9 +173,10 @@ refreshPlayerState tuneResult = do
 -- helpers
 
 -- | convert a tune to a format recognized by the player
-toPlayable :: AbcTune -> MidiRecording
+toPlayable :: AbcTune -> PlayableAbc
 toPlayable abcTune =
-   MidiRecording $ toMidi abcTune
+   PlayableAbc { abcTune: abcTune, bpm : 120, phraseSize : 0.7, generateIntro : false  }
+
 
 -- rendering functions
 renderPlayer :: ∀ m. MonadAff m => State -> H.ComponentHTML Action ChildSlots m
