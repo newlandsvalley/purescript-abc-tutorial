@@ -1,12 +1,14 @@
 {
   "private": true,
   "scripts": {
-    "build": "pulp build",
-    "example": "pulp build --no-check-main --main Example.Main --include example/src --to example/dist/abc-tutorial.js",
+    "build": "spago build",
+    "pulp-build": "pulp build",
+    "example": "spago bundle-app --main Example.Main --to example/dist/abc-tutorial.js",
+    "pulp-example": "pulp build --main Example.Main --include example/src --to example/dist/abc-tutorial.js",
     "minimize": "uglifyjs example/dist/abc-tutorial.js --output example/dist/min.js --compress"
   },
   "devDependencies": {
-    "pulp": "^14.0.0",
+    "pulp": "^15.0.0",
     "purescript": "^0.13.8",
     "purescript-psa": "^0.5.1",
     "webpack": "^3.6.0"

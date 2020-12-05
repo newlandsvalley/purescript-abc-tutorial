@@ -3,6 +3,8 @@
 /.pulp-cache/
 /deprecated/
 /output/
+/.spago/
 /example/dist/abc-tutorial.js
 /.psc*
 /.psa*
+/.purs-repl
