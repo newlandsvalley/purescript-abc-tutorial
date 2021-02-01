@@ -3,7 +3,7 @@
   "scripts": {
     "build": "spago build",
     "pulp-build": "pulp build",
-    "example": "spago bundle-app --main Example.Main --to example/dist/abc-tutorial.js",
+    "example": "spago -x ./example.dhall bundle-app --main Example.Main --to example/dist/abc-tutorial.js",
     "pulp-example": "pulp build --main Example.Main --include example/src --to example/dist/abc-tutorial.js",
     "minimize": "uglifyjs example/dist/abc-tutorial.js --output example/dist/min.js --compress"
   },
