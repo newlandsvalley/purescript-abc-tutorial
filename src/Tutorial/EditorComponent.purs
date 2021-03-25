@@ -6,7 +6,8 @@ import Data.Either (Either(..), either)
 import Data.String (null) as S
 import Data.String.CodeUnits (fromCharArray, toCharArray)
 import Data.Array (length, slice) as A
-import Data.Abc.Parser (PositionedParseError(..), parse)
+import Text.Parsing.StringParser (ParseError)
+import Data.Abc.Parser (parse)
 import Data.Abc (AbcTune)
 import Data.Maybe (Maybe(..))
 import Halogen as H
@@ -22,7 +23,7 @@ type Slot = H.Slot Query Message
 
 type State =
   { text :: String
-  , parseError :: Maybe PositionedParseError
+  , parseError :: Maybe ParseError
   , isEnabled :: Boolean
   }
 
@@ -33,15 +34,14 @@ data Query a =
   | UpdateEnabled Boolean a
   | GetText (String -> a)
 
-data Message = TuneResult (Either PositionedParseError AbcTune)
+data Message = TuneResult (Either ParseError AbcTune)
 
 -- | there is no tune yet
-nullTune :: Either PositionedParseError AbcTune
+nullTune :: Either ParseError AbcTune
 nullTune =
-  Left (PositionedParseError { pos : 0, error : "" })
+  Left { error : "", pos : 0 }
 
--- component :: forall m. H.Component HH.HTML Query Unit Message m
-component :: ∀ i m. H.Component HH.HTML Query i Message m
+component :: ∀ i m. H.Component Query i Message m
 component =
   H.mkComponent
     { initialState
@@ -73,7 +73,7 @@ component =
          , HP.class_ $ ClassName "abcEdit"
          , HP.enabled state.isEnabled
          -- , HP.wrap false
-         , HE.onValueInput (Just <<< UpdateContentAction)
+         , HE.onValueInput UpdateContentAction
          ]
       , renderParseError state
       ]
@@ -114,27 +114,27 @@ renderParseError state =
     txt = toCharArray state.text
   in
     case state.parseError of
-      Just (PositionedParseError pe) ->
+      Just { error, pos } ->
         if (S.null state.text) then
           HH.div_ []
         else
           let
             -- display a prefix of 5 characters before the error (if they're there) and a suffix of 5 after
             startPhrase =
-              max (pe.pos - textRange) 0
+              max (pos - textRange) 0
             errorPrefix =
-              A.slice startPhrase pe.pos txt
+              A.slice startPhrase pos txt
             startSuffix =
-              min (pe.pos + 1) (A.length txt)
+              min (pos + 1) (A.length txt)
             endSuffix =
-              min (pe.pos + textRange + 1) (A.length txt)
+              min (pos + textRange + 1) (A.length txt)
             errorSuffix =
               A.slice startSuffix endSuffix txt
             errorChar =
-              A.slice pe.pos (pe.pos + 1) txt
+              A.slice pos (pos + 1) txt
           in
             HH.p_
-              [ HH.text $ pe.error <> " - "
+              [ HH.text $ error <> " - "
               , HH.text $ fromCharArray errorPrefix
               , HH.span
                  [ errorHighlightStyle ]

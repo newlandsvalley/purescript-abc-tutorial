@@ -3,13 +3,12 @@ module Tutorial.Container where
 import Prelude
 
 import Audio.SoundFont (Instrument)
+import Text.Parsing.StringParser (ParseError)
 import Data.Abc (AbcTune)
-import Data.Abc.Parser (PositionedParseError)
 import Data.Abc.PlayableAbc (PlayableAbc(..))
 import Data.Either (Either(..), either)
 import Data.List (List(..))
 import Data.Maybe (Maybe(..))
-import Data.Symbol (SProxy(..))
 import Effect.Aff.Class (class MonadAff)
 import Data.Const (Const)
 import Halogen as H
@@ -20,12 +19,13 @@ import Halogen.HTML.Events as HE
 import Halogen.HTML.Properties as HP
 import Halogen.PlayerComponent as PC
 import Tutorial.Lessons as Lessons
+import Type.Proxy (Proxy(..))
 
 type Slot = H.Slot (Const Void) Void
 
 type State =
   { instruments :: Array Instrument
-  , tuneResult :: Either PositionedParseError AbcTune
+  , tuneResult :: Either ParseError AbcTune
   , lessonIndex :: Int
   }
 
@@ -58,10 +58,10 @@ type ChildSlots =
   , player :: (PC.Slot PlayableAbc) Unit
   )
 
-_editor = SProxy :: SProxy "editor"
-_player = SProxy :: SProxy "player"
+_editor = Proxy :: Proxy "editor"
+_player = Proxy :: Proxy "player"
 
-component :: ∀ q o m. MonadAff m => H.Component HH.HTML q Input o m
+component :: ∀ q o m. MonadAff m => H.Component q Input o m
 component =
   H.mkComponent
     { initialState
@@ -83,7 +83,7 @@ component =
 
   render :: State -> H.ComponentHTML Action ChildSlots m
   render state = HH.div
-    [ HP.id_ "abcTutorial" ]
+    [ HP.id "abcTutorial" ]
     [ HH.h1
          [HP.class_ (H.ClassName "center") ]
          [HH.text ("ABC Tutorial: Lesson "
@@ -91,7 +91,7 @@ component =
              <> " - "
              <> Lessons.title state.lessonIndex)]
       , HH.div
-        [ HP.id_ "instruction" ]
+        [ HP.id "instruction" ]
         [ HH.text $ Lessons.instruction state.lessonIndex ]
 
       -- left pane - editor and controls
@@ -102,7 +102,7 @@ component =
           [ HH.div
              [ HP.class_ (H.ClassName "leftPanelComponent") ]
                [
-                 HH.slot _editor unit ED.component unit (Just <<< HandleNewTuneText)
+                 HH.slot _editor unit ED.component unit HandleNewTuneText
                ]
           , HH.div
             [ HP.class_ (H.ClassName "leftPanelComponent") ]
@@ -125,7 +125,7 @@ component =
                    [ HP.src (Lessons.scoreUrl state.lessonIndex) ]
                  ]
               , HH.div
-                 [ HP.id_ "hint"
+                 [ HP.id "hint"
                  , HP.class_ (H.ClassName "rightPanelComponent")
                  ]
                    [ HH.text $ Lessons.hint state.lessonIndex ]
@@ -136,12 +136,12 @@ component =
 
   handleAction = case _ of
     Init -> do
-      _ <- H.query _editor unit $ H.tell (ED.UpdateContent (Lessons.example 0))
+      _ <- H.tell _editor unit (ED.UpdateContent (Lessons.example 0))
       pure unit
     Move lessonIndex -> do
       _ <- H.modify (\st -> st { lessonIndex = lessonIndex } )
-      _ <- H.query _editor unit $ H.tell (ED.UpdateContent (Lessons.example lessonIndex))
-      _ <- H.query _player unit $ H.tell PC.StopMelody
+      _ <- H.tell _editor unit (ED.UpdateContent (Lessons.example lessonIndex))
+      _ <- H.tell _player unit PC.StopMelody
       pure unit
     HandleNewTuneText (ED.TuneResult r) -> do
       _ <- refreshPlayerState r
@@ -155,19 +155,24 @@ component =
       -- is playing and re-enable when it stops playing
       pure unit
     Finalize -> do
-      _ <- H.query _player unit $ H.tell PC.StopMelody
+      _ <- H.tell _player unit PC.StopMelody
       pure unit
 
 -- refresh the state of the player by passing it the tune result
 -- (if it had parsed OK)
 refreshPlayerState :: ∀ o m.
-       Either PositionedParseError AbcTune
+       Either ParseError AbcTune
     -> H.HalogenM State Action ChildSlots o m Unit
 refreshPlayerState tuneResult = do
   _ <- either
+     (\_ -> H.tell _player unit PC.StopMelody)
+     (\abcTune -> H.tell  _player unit (PC.HandleNewPlayable (toPlayable abcTune)))
+     tuneResult
+     {-
      (\_ -> H.query _player unit $ H.tell PC.StopMelody)
      (\abcTune -> H.query _player unit $ H.tell (PC.HandleNewPlayable (toPlayable abcTune)))
-     tuneResult
+     tuneResult 
+     -}
   pure unit
 
 -- helpers
@@ -186,7 +191,7 @@ renderPlayer state =
       HH.div
         [ HP.class_ (H.ClassName "leftPanelComponent")]
         [
-          HH.slot _player unit (PC.component (toPlayable abcTune) state.instruments) unit (Just <<< HandleTuneIsPlaying)
+          HH.slot _player unit (PC.component (toPlayable abcTune) state.instruments) unit HandleTuneIsPlaying
         ]
     Left err ->
       HH.div_
@@ -238,7 +243,7 @@ renderMoveIndexButton buttonType state =
           "last"
   in
     HH.button
-      [ HE.onClick  \_ -> Just (Move targetIndex)
+      [ HE.onClick  \_ -> Move targetIndex
       , HP.class_ $ ClassName className
       , HP.enabled enabled
       ]
