@@ -145,11 +145,13 @@ component =
       pure unit
     HandleNewTuneText (ED.TuneResult r) -> do
       _ <- refreshPlayerState r
+      {-}
       let
         abcTune = either (\_ -> emptyTune) (identity) r
+      -}
       _ <- H.modify (\st -> st { tuneResult = r } )
       pure unit
-    HandleTuneIsPlaying message -> do
+    HandleTuneIsPlaying _ -> do   -- message
       -- we ignore this message, but if we wanted to we could
       -- disable any button that can alter the editor contents whilst the player
       -- is playing and re-enable when it stops playing
@@ -193,7 +195,7 @@ renderPlayer state =
         [
           HH.slot _player unit (PC.component (toPlayable abcTune) state.instruments) unit HandleTuneIsPlaying
         ]
-    Left err ->
+    Left _ ->
       HH.div_
         [  ]
 
