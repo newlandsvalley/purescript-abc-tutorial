@@ -17,6 +17,7 @@ You can edit this file as you like.
   , "halogen-css"
   , "lists"
   , "maybe"
+  , "ordered-collections"
   , "prelude"
   , "soundfonts"
   , "string-parsers"

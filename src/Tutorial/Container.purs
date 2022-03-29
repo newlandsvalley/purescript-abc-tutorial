@@ -3,12 +3,13 @@ module Tutorial.Container where
 import Prelude
 
 import Audio.SoundFont (Instrument)
-import Text.Parsing.StringParser (ParseError)
+import StringParser (ParseError)
 import Data.Abc (AbcTune)
-import Data.Abc.PlayableAbc (PlayableAbc(..))
+import Data.Abc.Melody (PlayableAbc(..), defaultPlayableAbcProperties)
 import Data.Either (Either(..), either)
 import Data.List (List(..))
 import Data.Maybe (Maybe(..))
+import Data.Map (empty)
 import Effect.Aff.Class (class MonadAff)
 import Data.Const (Const)
 import Halogen as H
@@ -50,7 +51,7 @@ emptyTune =
   { headers : Nil, body: Nil }
 
 -- the player is generic over a variety of playable sources of music
--- so we must specialize to MidiRecording
+-- so we must specialize to PlayableAbc
 type PlayerQuery = PC.Query PlayableAbc
 
 type ChildSlots =
@@ -145,10 +146,6 @@ component =
       pure unit
     HandleNewTuneText (ED.TuneResult r) -> do
       _ <- refreshPlayerState r
-      {-}
-      let
-        abcTune = either (\_ -> emptyTune) (identity) r
-      -}
       _ <- H.modify (\st -> st { tuneResult = r } )
       pure unit
     HandleTuneIsPlaying _ -> do   -- message
@@ -170,11 +167,6 @@ refreshPlayerState tuneResult = do
      (\_ -> H.tell _player unit PC.StopMelody)
      (\abcTune -> H.tell  _player unit (PC.HandleNewPlayable (toPlayable abcTune)))
      tuneResult
-     {-
-     (\_ -> H.query _player unit $ H.tell PC.StopMelody)
-     (\abcTune -> H.query _player unit $ H.tell (PC.HandleNewPlayable (toPlayable abcTune)))
-     tuneResult 
-     -}
   pure unit
 
 -- helpers
@@ -182,8 +174,15 @@ refreshPlayerState tuneResult = do
 -- | convert a tune to a format recognized by the player
 toPlayable :: AbcTune -> PlayableAbc
 toPlayable abcTune =
-   PlayableAbc { abcTune: abcTune, bpm : 120, phraseSize : 0.7, generateIntro : false  }
-
+  let
+    props = defaultPlayableAbcProperties
+      { tune = abcTune
+      , phraseSize = 0.7
+      , generateIntro = false
+      , chordMap = empty
+      }
+  in
+    PlayableAbc props
 
 -- rendering functions
 renderPlayer :: ∀ m. MonadAff m => State -> H.ComponentHTML Action ChildSlots m
