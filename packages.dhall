@@ -105,57 +105,82 @@ in  upstream
 -------------------------------
 -}
 let upstream =
-      https://github.com/purescript/package-sets/releases/download/psc-0.14.7-20220321/packages.dhall
-        sha256:dff91304260c1196273badf7d8141e66ab16bed147b95aa175dd8a84ec87d58f
+      https://github.com/purescript/package-sets/releases/download/psc-0.15.0-20220515/packages.dhall
+        sha256:6d7cde12a37db772a5fb78a1d8877481445abfd3351d57605e2ceb5e66892022
 
 in  upstream
   with abc-parser =
     { dependencies =
-      [ "bifunctors"
-      , "effect"
-      , "either"
-      , "foldable-traversable"
-      , "maybe"
-      , "midi"
-      , "ordered-collections"
-      , "profunctor-lenses"
-      , "rationals"
-      , "strings"
-      , "stringutils"
-      , "string-parsers"
-      , "transformers"
-      , "tuples"
-      ]
+    [ "arrays"
+    , "bifunctors"
+    , "control"
+    , "either"
+    , "enums"
+    , "foldable-traversable"
+    , "identity"
+    , "integers"
+    , "lists"
+    , "maybe"
+    , "midi"
+    , "newtype"
+    , "ordered-collections"
+    , "partial"
+    , "prelude"
+    , "profunctor-lenses"
+    , "rationals"
+    , "string-parsers"
+    , "strings"
+    , "stringutils"
+    , "transformers"
+    , "tuples"
+    , "unfoldable"
+    ]
     , repo = "https://github.com/newlandsvalley/purescript-abc-parser.git"
-    , version = "ps014"
+    , version = "ps015"
     }
   with abc-melody =
-    { dependencies = [ "abc-parser", "effect", "prelude", "soundfonts", "rhythm-guitar" ]
+    { dependencies =     
+    [ "abc-parser"
+    , "arrays"
+    , "bifunctors"
+    , "either"
+    , "foldable-traversable"
+    , "integers"
+    , "lists"
+    , "maybe"
+    , "newtype"
+    , "ordered-collections"
+    , "prelude"
+    , "rationals"
+    , "rhythm-guitar"
+    , "soundfonts"
+    , "transformers"
+    , "tuples"
+    ]
     , repo = "https://github.com/newlandsvalley/purescript-abc-melody.git"
-    , version = "ps014"
+    , version = "ps015"
     }
   with rhythm-guitar =
     { dependencies =
-      [ "aff"
-      , "affjax"
-      , "arrays"
-      , "console"
-      , "control"
-      , "debug"
-      , "effect"
-      , "either"
-      , "foreign"
-      , "http-methods"
-      , "maybe"
-      , "ordered-collections"
-      , "prelude"
-      , "psci-support"
-      , "simple-json"
-      , "soundfonts"
-      , "string-parsers"
-      , "strings"
-      , "tuples"
-      ]
+    [ "aff"
+    , "affjax"
+    , "affjax-web"
+    , "arrays"
+    , "console"
+    , "control"
+    , "effect"
+    , "either"
+    , "foreign"
+    , "http-methods"
+    , "maybe"
+    , "ordered-collections"
+    , "prelude"
+    , "soundfonts"
+    , "string-parsers"
+    , "strings"
+    , "tuples"
+    , "yoga-json"
+    ] 
     , repo = "https://github.com/newlandsvalley/RhythmGuitar.git"
     , version = "main"
     }
@@ -171,38 +196,5 @@ in  upstream
       ]
     , repo =
         "https://github.com/newlandsvalley/purescript-halogen-components.git"
-    , version = "ps014"
+    , version = "ps015"
     }
-  with soundfonts =
-    { dependencies =
-      [ "aff"
-      , "affjax"
-      , "argonaut-core"
-      , "arraybuffer-types"
-      , "arrays"
-      , "b64"
-      , "bifunctors"
-      , "console"
-      , "effect"
-      , "either"
-      , "exceptions"
-      , "foldable-traversable"
-      , "foreign-object"
-      , "http-methods"
-      , "integers"
-      , "lists"
-      , "maybe"
-      , "midi"
-      , "ordered-collections"
-      , "parallel"
-      , "partial"
-      , "prelude"
-      , "strings"
-      , "transformers"
-      , "tuples"
-      ]
-    , repo = "https://github.com/newlandsvalley/purescript-soundfonts.git"
-    , version = "v3.3.0"
-    }
-
-
