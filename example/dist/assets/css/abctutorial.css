@@ -32,7 +32,6 @@
   font-family: "Times New Roman", "monospace";
   text-align:  left;
   margin: 10px 80px 20px 40px;
-  height: 4.0em;
   display: block;
 }
 
@@ -69,4 +68,25 @@
   text-align: center;
   margin-left: auto;
   margin-right: auto;
+}
+
+#abcTutorial Textarea {
+  height: 5em;
+  width: 20em;
+}
+
+#tutorialPlayer {
+  display: block;
+}
+
+#tutorialButtons {
+  margin-left: 25px;
+}
+
+/* on larger screens, allow larger edit windows */
+@media (min-width: 600px) {
+  #abcTutorial Textarea {
+    height: 13em;
+    width: 25em;
+  }
 }
