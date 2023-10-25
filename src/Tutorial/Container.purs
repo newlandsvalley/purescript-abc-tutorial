@@ -112,8 +112,8 @@ component =
             , renderMoveIndexButton Forward state
             , renderMoveIndexButton Back state
             , renderMoveIndexButton Finish state
-            ]
             , renderPlayer state
+            ]
           ]
         ]
 
@@ -123,7 +123,9 @@ component =
             [ HH.div
                [ HP.class_ (H.ClassName "rightPanelComponent") ]
                  [HH.img
-                   [ HP.src (Lessons.scoreUrl state.lessonIndex) ]
+                   [ HP.id "tutorialScore"
+                   , HP.src (Lessons.scoreUrl state.lessonIndex) 
+                   ]
                  ]
               , HH.div
                  [ HP.id "hint"
@@ -190,7 +192,7 @@ renderPlayer state =
   case state.tuneResult of
     Right abcTune ->
       HH.div
-        [ HP.class_ (H.ClassName "leftPanelComponent")]
+        [ HP.id "tutorialPlayer" ]
         [
           HH.slot _player unit (PC.component (toPlayable abcTune) state.instruments) unit HandleTuneIsPlaying
         ]

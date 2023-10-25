@@ -31,8 +31,7 @@
   font-size: 1.3em;
   font-family: "Times New Roman", "monospace";
   text-align:  left;
-  margin: 10px 80px 20px 40px;
-  height: 4.0em;
+  margin: 10px 5px 20px 5px;
   display: block;
 }
 
@@ -40,33 +39,65 @@
   width: 25em;
 }
 
+.center {
+  text-align: center;
+}
 
 .abcEdit {
-  padding: 10px 0px 10px 0px;
+  padding-bottom: 10px;
+  margin: 0px 2px 10px 2px;
   font-size: 1.5em;
   font-family: "Times New Roman", "monospace";
   background-color: rgb 243 246 198;
   text-align: left;
-  margin: 0px 2px 0px 2px;
   display: block;
 }
 
-.leftPane {
+#abcTutorial > .leftPane {
   float: left;
-  width: 800px;
+  width: 100%;
 }
 
-.leftPanelComponent {
+#abcTutorial .leftPanelComponent {
   float: left;
-  margin: 10px 0px 10px 50px;
+  margin: 0px 0px 10px 50px;
 }
 
-.rightPane {
-  float: left;
+#abcTutorial Textarea {
+  height: 5em;
+  width: 16em;
 }
 
-.center {
-  text-align: center;
-  margin-left: auto;
-  margin-right: auto;
+#tutorialPlayer {
+  display: block;
+  margin-left: 24px;
+}
+
+#tutorialScore {
+  display: block;
+  max-width: 95vw;
+}
+
+#tutorialButtons {
+  margin-left: 50px;
+}
+
+
+@media (min-width: 725px) {
+
+  #abcTutorial > .leftPane {
+    float: left;
+    width: 800px;
+  }  
+
+  /* in the ABC tutorial, allow larger edit windows */
+  #abcTutorial Textarea {
+    height: 13em;
+    width: 23em;
+  }
+
+  #instruction, #hint {
+    margin: 10px 20px 20px 20px;
+  }
+
 }

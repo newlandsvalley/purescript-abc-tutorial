@@ -66,9 +66,7 @@ component =
   render state =
     HH.div_
       [ HH.textarea
-         [ HP.rows 13
-         , HP.cols 50
-         , HP.autofocus true
+         [ HP.autofocus true
          , HP.value state.text
          , HP.class_ $ ClassName "abcEdit"
          , HP.enabled state.isEnabled
