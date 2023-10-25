@@ -106,14 +106,19 @@ component =
                  HH.slot _editor unit ED.component unit HandleNewTuneText
                ]
           , HH.div
-            [ HP.class_ (H.ClassName "leftPanelComponent") ]
+            [ HP.class_ (H.ClassName "leftPanelComponent")
+            , HP.id "tutorialButtons" ]
             [
               renderMoveIndexButton Start state
             , renderMoveIndexButton Forward state
             , renderMoveIndexButton Back state
             , renderMoveIndexButton Finish state
-            , renderPlayer state
             ]
+          , HH.div
+            [ HP.class_ (H.ClassName "leftPanelComponent")
+            , HP.id "tutorialPlayer"
+            ]
+            [ renderPlayer state ]
           ]
         ]
 
@@ -190,12 +195,9 @@ toPlayable abcTune =
 renderPlayer :: ∀ m. MonadAff m => State -> H.ComponentHTML Action ChildSlots m
 renderPlayer state =
   case state.tuneResult of
-    Right abcTune ->
-      HH.div
-        [ HP.id "tutorialPlayer" ]
-        [
-          HH.slot _player unit (PC.component (toPlayable abcTune) state.instruments) unit HandleTuneIsPlaying
-        ]
+    Right abcTune -> 
+      HH.slot _player unit (PC.component (toPlayable abcTune) state.instruments) unit HandleTuneIsPlaying 
+      
     Left _ ->
       HH.div_
         [  ]

@@ -69,17 +69,13 @@
 }
 
 #tutorialPlayer {
-  display: block;
-  margin-left: 24px;
+  clear: left;
+  padding-left: 25px;
 }
 
 #tutorialScore {
   display: block;
   max-width: 95vw;
-}
-
-#tutorialButtons {
-  margin-left: 50px;
 }
 
 /* on larger screens */
