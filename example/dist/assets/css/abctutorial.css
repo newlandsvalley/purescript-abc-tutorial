@@ -82,7 +82,7 @@
   margin-left: 50px;
 }
 
-
+/* on larger screens */
 @media (min-width: 725px) {
 
   #abcTutorial > .leftPane {
@@ -99,26 +99,5 @@
   #instruction, #hint {
     margin: 10px 20px 20px 20px;
   }
-
 }
 
-#abcTutorial Textarea {
-  height: 5em;
-  width: 20em;
-}
-
-#tutorialPlayer {
-  display: block;
-}
-
-#tutorialButtons {
-  margin-left: 25px;
-}
-
-/* on larger screens, allow larger edit windows */
-@media (min-width: 600px) {
-  #abcTutorial Textarea {
-    height: 13em;
-    width: 25em;
-  }
-}
