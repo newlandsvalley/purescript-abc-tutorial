@@ -64,14 +64,14 @@ component =
 
   render :: State -> H.ComponentHTML Action () m
   render state =
-    HH.div_
+    HH.div
+      [ HP.id "tutorialTextarea"]
       [ HH.textarea
          [ HP.autofocus true
          , HP.value state.text
          , HP.class_ $ ClassName "abcEdit"
          , HP.enabled state.isEnabled
-         -- , HP.wrap false
-         , HE.onValueInput UpdateContentAction
+         , HE.onValueInput UpdateContentAction 
          ]
       , renderParseError state
       ]

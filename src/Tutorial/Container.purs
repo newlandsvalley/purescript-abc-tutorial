@@ -3,22 +3,22 @@ module Tutorial.Container where
 import Prelude
 
 import Audio.SoundFont (Instrument)
-import StringParser (ParseError)
 import Data.Abc (AbcTune)
 import Data.Abc.Melody (PlayableAbc(..), defaultPlayableAbcProperties)
+import Data.Const (Const)
 import Data.Either (Either(..), either)
 import Data.List (List(..))
-import Data.Maybe (Maybe(..))
 import Data.Map (empty)
+import Data.Maybe (Maybe(..))
 import Effect.Aff.Class (class MonadAff)
-import Data.Const (Const)
 import Halogen as H
-import Tutorial.EditorComponent as ED
 import Halogen.HTML as HH
 import Halogen.HTML.Core (ClassName(..))
 import Halogen.HTML.Events as HE
 import Halogen.HTML.Properties as HP
 import Halogen.PlayerComponent as PC
+import StringParser (ParseError)
+import Tutorial.EditorComponent as ED
 import Tutorial.Lessons as Lessons
 import Type.Proxy (Proxy(..))
 

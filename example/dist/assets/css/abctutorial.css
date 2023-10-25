@@ -101,3 +101,24 @@
   }
 
 }
+
+#abcTutorial Textarea {
+  height: 5em;
+  width: 20em;
+}
+
+#tutorialPlayer {
+  display: block;
+}
+
+#tutorialButtons {
+  margin-left: 25px;
+}
+
+/* on larger screens, allow larger edit windows */
+@media (min-width: 600px) {
+  #abcTutorial Textarea {
+    height: 13em;
+    width: 25em;
+  }
+}
