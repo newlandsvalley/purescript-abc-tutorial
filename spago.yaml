@@ -1,0 +1,78 @@
+package:
+  dependencies:
+    - abc-melody
+    - abc-parser
+    - aff
+    - arrays
+    - colors
+    - const
+    - css
+    - either
+    - halogen
+    - halogen-components
+    - halogen-css
+    - lists
+    - maybe
+    - ordered-collections
+    - prelude
+    - soundfonts
+    - string-parsers
+    - strings
+  name: abc-tutorial
+workspace:
+  extraPackages:
+    abc-melody:
+      dependencies:
+        - abc-parser
+        - arrays
+        - bifunctors
+        - either
+        - foldable-traversable
+        - integers
+        - lists
+        - maybe
+        - newtype
+        - ordered-collections
+        - prelude
+        - rationals
+        - rhythm-guitar
+        - soundfonts
+        - transformers
+        - tuples
+      git: https://github.com/newlandsvalley/purescript-abc-melody.git
+      ref: v0.3.0
+    halogen-components:
+      dependencies:
+        - console
+        - css
+        - effect
+        - halogen
+        - halogen-css
+        - js-fileio
+        - soundfonts
+      git: https://github.com/newlandsvalley/purescript-halogen-components.git
+      ref: v0.6.0
+    rhythm-guitar:
+      dependencies:
+        - aff
+        - affjax
+        - affjax-web
+        - arrays
+        - console
+        - control
+        - effect
+        - either
+        - foreign
+        - http-methods
+        - maybe
+        - ordered-collections
+        - prelude
+        - simple-json
+        - soundfonts
+        - string-parsers
+        - strings
+        - tuples
+      git: https://github.com/newlandsvalley/RhythmGuitar.git
+      ref: v0.2.0
+  packageSet:
+    registry: 62.3.2
