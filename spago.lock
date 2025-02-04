@@ -100,10 +100,8 @@
             "rationals",
             "record",
             "refs",
-            "rhythm-guitar",
             "safe-coerce",
             "signal",
-            "simple-json",
             "soundfonts",
             "st",
             "string-parsers",
@@ -118,7 +116,6 @@
             "unfoldable",
             "unsafe-coerce",
             "unsafe-reference",
-            "variant",
             "web-clipboard",
             "web-dom",
             "web-events",
@@ -225,10 +222,8 @@
             "rationals",
             "record",
             "refs",
-            "rhythm-guitar",
             "safe-coerce",
             "signal",
-            "simple-json",
             "soundfonts",
             "st",
             "string-parsers",
@@ -243,7 +238,6 @@
             "unfoldable",
             "unsafe-coerce",
             "unsafe-reference",
-            "variant",
             "web-clipboard",
             "web-dom",
             "web-events",
@@ -788,7 +782,7 @@
     "extra_packages": {
       "abc-melody": {
         "git": "https://github.com/newlandsvalley/purescript-abc-melody.git",
-        "ref": "v0.3.0",
+        "ref": "5776b657079245be876616213febd4c7a7084483",
         "dependencies": [
           "abc-parser",
           "arrays",
@@ -802,15 +796,34 @@
           "ordered-collections",
           "prelude",
           "rationals",
-          "rhythm-guitar",
           "soundfonts",
+          "transformers",
+          "tuples"
+        ]
+      },
+      "abc-parser": {
+        "git": "https://github.com/newlandsvalley/purescript-abc-parser.git",
+        "ref": "cf9d80458a11f5775471e345d44802823982724c",
+        "dependencies": [
+          "bifunctors",
+          "effect",
+          "either",
+          "foldable-traversable",
+          "maybe",
+          "midi",
+          "ordered-collections",
+          "profunctor-lenses",
+          "rationals",
+          "string-parsers",
+          "strings",
+          "stringutils",
           "transformers",
           "tuples"
         ]
       },
       "halogen-components": {
         "git": "https://github.com/newlandsvalley/purescript-halogen-components.git",
-        "ref": "v0.6.0",
+        "ref": "e0934e4da0afd7d813de1f31760888aa48b7c4df",
         "dependencies": [
           "console",
           "css",
@@ -820,30 +833,6 @@
           "js-fileio",
           "soundfonts"
         ]
-      },
-      "rhythm-guitar": {
-        "git": "https://github.com/newlandsvalley/RhythmGuitar.git",
-        "ref": "v0.2.0",
-        "dependencies": [
-          "aff",
-          "affjax",
-          "affjax-web",
-          "arrays",
-          "console",
-          "control",
-          "effect",
-          "either",
-          "foreign",
-          "http-methods",
-          "maybe",
-          "ordered-collections",
-          "prelude",
-          "simple-json",
-          "soundfonts",
-          "string-parsers",
-          "strings",
-          "tuples"
-        ]
       }
     }
   },
@@ -851,7 +840,7 @@
     "abc-melody": {
       "type": "git",
       "url": "https://github.com/newlandsvalley/purescript-abc-melody.git",
-      "rev": "a5dca0b0cad8a1e626dee140c1db8bfc24d39143",
+      "rev": "5776b657079245be876616213febd4c7a7084483",
       "dependencies": [
         "abc-parser",
         "arrays",
@@ -865,41 +854,30 @@
         "ordered-collections",
         "prelude",
         "rationals",
-        "rhythm-guitar",
         "soundfonts",
         "transformers",
         "tuples"
       ]
     },
     "abc-parser": {
-      "type": "registry",
-      "version": "2.0.1",
-      "integrity": "sha256-0kKfG3zGpUwQlHsVpVfRNPji6H/FuLUDI+oZLPc+EQY=",
+      "type": "git",
+      "url": "https://github.com/newlandsvalley/purescript-abc-parser.git",
+      "rev": "cf9d80458a11f5775471e345d44802823982724c",
       "dependencies": [
-        "arrays",
         "bifunctors",
-        "control",
+        "effect",
         "either",
-        "enums",
         "foldable-traversable",
-        "identity",
-        "integers",
-        "js-bigints",
-        "lists",
         "maybe",
         "midi",
-        "newtype",
         "ordered-collections",
-        "partial",
-        "prelude",
         "profunctor-lenses",
         "rationals",
         "string-parsers",
         "strings",
         "stringutils",
         "transformers",
-        "tuples",
-        "unfoldable"
+        "tuples"
       ]
     },
     "aff": {
@@ -1423,7 +1401,7 @@
     "halogen-components": {
       "type": "git",
       "url": "https://github.com/newlandsvalley/purescript-halogen-components.git",
-      "rev": "30080f7b1219b5370172d937ca971d89816ac5a9",
+      "rev": "e0934e4da0afd7d813de1f31760888aa48b7c4df",
       "dependencies": [
         "console",
         "css",
@@ -1884,31 +1862,6 @@
         "prelude"
       ]
     },
-    "rhythm-guitar": {
-      "type": "git",
-      "url": "https://github.com/newlandsvalley/RhythmGuitar.git",
-      "rev": "da740b5fdb8d5fd5a06186740963344dfd77cace",
-      "dependencies": [
-        "aff",
-        "affjax",
-        "affjax-web",
-        "arrays",
-        "console",
-        "control",
-        "effect",
-        "either",
-        "foreign",
-        "http-methods",
-        "maybe",
-        "ordered-collections",
-        "prelude",
-        "simple-json",
-        "soundfonts",
-        "string-parsers",
-        "strings",
-        "tuples"
-      ]
-    },
     "safe-coerce": {
       "type": "registry",
       "version": "2.0.0",
@@ -1928,22 +1881,6 @@
         "foldable-traversable",
         "maybe",
         "prelude"
-      ]
-    },
-    "simple-json": {
-      "type": "registry",
-      "version": "9.0.0",
-      "integrity": "sha256-K3RJaThqsszTd+TEklzZmAdDqvIHWgXIfKqlsoykU1c=",
-      "dependencies": [
-        "arrays",
-        "exceptions",
-        "foreign",
-        "foreign-object",
-        "nullable",
-        "prelude",
-        "record",
-        "typelevel-prelude",
-        "variant"
       ]
     },
     "soundfonts": {
@@ -2142,21 +2079,6 @@
       "integrity": "sha256-zU7BhfJU14nXQRZG9iADsp0mSiKhz07OcKyjRB2YT+Y=",
       "dependencies": [
         "prelude"
-      ]
-    },
-    "variant": {
-      "type": "registry",
-      "version": "8.0.0",
-      "integrity": "sha256-SR//zQDg2dnbB8ZHslcxieUkCeNlbMToapvmh9onTtw=",
-      "dependencies": [
-        "enums",
-        "lists",
-        "maybe",
-        "partial",
-        "prelude",
-        "record",
-        "tuples",
-        "unsafe-coerce"
       ]
     },
     "web-clipboard": {

@@ -8,7 +8,6 @@ import Data.Abc.Melody (PlayableAbc(..), defaultPlayableAbcProperties)
 import Data.Const (Const)
 import Data.Either (Either(..), either)
 import Data.List (List(..))
-import Data.Map (empty)
 import Data.Maybe (Maybe(..))
 import Effect.Aff.Class (class MonadAff)
 import Halogen as H
@@ -186,7 +185,6 @@ toPlayable abcTune =
       { tune = abcTune
       , phraseSize = 0.7
       , generateIntro = false
-      , chordMap = empty
       }
   in
     PlayableAbc props
